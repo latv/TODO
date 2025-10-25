@@ -10,7 +10,7 @@ class TaskController extends Controller
 
     public function index(Request $request)
     {
-        $status = $request->query('status', 'all');
+        $status = $request->query('status');
 
         $query = Task::query();
 
@@ -25,6 +25,17 @@ class TaskController extends Controller
         return view('tasks.index', compact('tasks', 'status'));
     }
 
+    public function update(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:50',
+            'description' => 'nullable|string',
+        ]);
+
+        $task->update($validated);
+
+        return redirect()->route('tasks.index')->with('success', 'Task updated successfully!');
+    }
 
     public function create(Request $request)
     {
